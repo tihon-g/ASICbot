@@ -16,12 +16,6 @@ ssl = SSLify(server)
 URL = 'https://api.telegram.org/bot%s/' % config.token
 bot = telebot.TeleBot(config.token)
 
-def get_price():
-    url = 'https://api.coinmarketcap.com/v2/ticker/'
-    r = requests.get(url).json()
-    price = r['data']['1']['quotes']['USD']['price']
-    return str(price)
-
 def write_json(data, filename='answer.json'):
     with open(filename, 'w') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
@@ -46,7 +40,7 @@ def main():
     send_message_to_bot(chat_id, "" )
     command = r['message']['text']
     send_message_to_bot (chat_id, 'ты сказал ' + command + '?')
-    return res + chat_id + "btc price=%s" % get_price()
+    return res + chat_id + "btc price=%s" % btc.get_price("BTC")
 
 @server.route('/')
 def index():
@@ -106,8 +100,5 @@ def m(message):
 
 if __name__ == '__main__':
     server.run()
-#print (btc.get_wallets_info())
-#print (btc.get_miners_info())
-#print (btc.get_state_info())
 
 bot.polling() #(non_stop=True)
